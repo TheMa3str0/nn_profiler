@@ -78,6 +78,17 @@ def validate_pool_params(pool_params):
 
     return [error for error in errors if error is not None]
 
+def validate_dropout_params(dropout_params):
+    errors = []
+    
+    if not isinstance(dropout_params['p'], (float, int)) or dropout_params['p'] < 0:
+        errors.append("'p (probability)' must be a positive number.")
+        
+    if not isinstance(dropout_params['inplace'], bool):
+        errors.append("'inplace' must be boolean.")
+        
+    return [error for error in errors if error is not None]
+
 def check_network_config(network_config):
     errors = []
 
@@ -168,9 +179,9 @@ def check_layers_config(layers):
                 errors.append("Missing 'batchnorm_params' in a 'batchnorm2d' layer.")
                 
         if layer['type'] == 'dropout':
-            if 'p' in layer:
-                if not isinstance(layer['p'], (float, int)) or layer['p'] < 0:
-                    errors.append("'p (probability)' must be a positive number.")
+            if 'dropout_params' in layer:
+                dropout_errors = validate_dropout_params(layer['dropout_params'])
+                errors.extend(dropout_errors)
             else:
                 errors.append("Missing 'p (probability)' in a 'dropout' layer.")
                 

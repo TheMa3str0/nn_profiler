@@ -46,8 +46,10 @@ def build_custom_net(layers):
                     self.layers.append(nn.AvgPool2d(kernel_size=kernel_size, stride=stride, padding=padding))
                     
                 elif layer_type == 'dropout':
-                    probability = layer_params['p']
-                    self.layers.append(nn.Dropout(p=probability))
+                    dropout_params = layer_params['dropout_params']
+                    probability = dropout_params['p']
+                    inplace = dropout_params['inplace']
+                    self.layers.append(nn.Dropout(p=probability, inplace=inplace))
                     
                 if activation == 'relu':
                     self.layers.append(nn.ReLU())

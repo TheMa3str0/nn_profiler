@@ -72,6 +72,11 @@ std::vector<NetworkLayer>& ConfigParser::getNetworkLayers() {
             BatchnormParams batchnorm_parameters;
             batchnorm_parameters.num_features = layer["batchnorm_params"]["num_features"].get<std::vector<int64_t>>();
             layer_info.batchnorm_params = batchnorm_parameters;
+        } else if (layer_info.type == "dropout") {
+            DropoutParams dropout_parameters;
+            dropout_parameters.probability = layer["dropout_params"]["p"];
+            dropout_parameters.inplace = layer["dropout_params"]["inplace"];
+            layer_info.dropout_params = dropout_parameters;
         }
         
         network_layers_.push_back(layer_info);
