@@ -1,0 +1,3 @@
+/home/oguyig00/nn_profiler/cpp/build/CMakeFiles/profiler.dir
+/home/oguyig00/nn_profiler/cpp/build/CMakeFiles/edit_cache.dir
+/home/oguyig00/nn_profiler/cpp/build/CMakeFiles/rebuild_cache.dir

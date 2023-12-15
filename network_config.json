@@ -1,0 +1,95 @@
+{
+    "network": {
+        "device": "gpu",
+        "input_shape": [4, 80, 80],
+        "mode": "training",
+
+        "inference_params": {
+            "no_inferences": 5000
+        },
+
+        "training_params": {
+            "optimizer": "adam",
+            "learning_rate": 0.001,
+            "loss_function": "categorical_crossentropy",
+            "batch_size": 32,
+            "epochs": 10,
+            "num_samples": 500
+        },
+
+        "use_onnx": false,
+        "onnx_file_path": "../model.onnx",
+
+        "task": "classification",
+        "layers": [
+            {
+                "type": "conv2d",
+                "activation_function": "relu",
+                "io_shape": [4, 16],
+                "conv_params": {
+                    "kernel_size": [3, 3],
+                    "stride": [1, 1],
+                    "padding": 1
+                }
+            },
+            {
+                "type": "conv2d",
+                "activation_function": "relu",
+                "io_shape": [16, 32],
+                "conv_params": {
+                    "kernel_size": [3, 3],
+                    "stride": [1, 1],
+                    "padding": 1
+                }
+            },
+            {
+                "type": "maxpool2d",
+                "maxpool_params": {
+                    "kernel_size": [2, 2],
+                    "stride": [2, 2],
+                    "padding": 0
+                }
+            },
+            {
+                "type": "conv2d",
+                "activation_function": "relu",
+                "io_shape": [32, 64],
+                "conv_params": {
+                    "kernel_size": [3, 3],
+                    "stride": [1, 1],
+                    "padding": 1
+                }
+            },
+            {
+                "type": "conv2d",
+                "activation_function": "relu",
+                "io_shape": [64, 64],
+                "conv_params": {
+                    "kernel_size": [3, 3],
+                    "stride": [1, 1],
+                    "padding": 1
+                }
+            },
+            {
+                "type": "maxpool2d",
+                "maxpool_params": {
+                    "kernel_size": [2, 2],
+                    "stride": [2, 2],
+                    "padding": 0
+                }
+            },
+            {
+                "type": "flatten"
+            },
+            {
+                "type": "dense",
+                "activation_function": "relu",
+                "io_shape": [25600, 512]
+            },
+            {
+                "type": "dense",
+                "io_shape": [512, 6]
+            }
+        ]
+    }
+}
