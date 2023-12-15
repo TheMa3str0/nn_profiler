@@ -10,7 +10,7 @@ struct ConvParams {
     std::string padding;
 };
 
-struct MaxpoolParams {
+struct PoolParams {
     std::vector<int64_t> kernel_size;
     std::vector<int64_t> stride;
     std::string padding;
@@ -21,7 +21,8 @@ struct BatchnormParams {
 };
 
 struct DropoutParams {
-    float probability;
+    double probability;
+    bool inplace;
 };
 
 struct NetworkLayer {
@@ -29,7 +30,7 @@ struct NetworkLayer {
     std::string activation_function;
     std::vector<int64_t> io_shape;
     ConvParams conv_params; // Only used if type is conv2d
-    MaxpoolParams maxpool_params; // Only used if type is maxpool2d
+    PoolParams pool_params; // Only used if type is maxpool2d or averagepool2d
     BatchnormParams batchnorm_params; // Only used if type is batchnorm2d
     DropoutParams dropout_params; // Only used if type is dropout
 };
@@ -57,20 +58,35 @@ struct CustomNetworkImpl : torch::nn::Module {
             } else if (layer_info.type == "flatten") {
                 layers->push_back(torch::nn::Flatten());
             } else if (layer_info.type == "maxpool2d") {
-                torch::nn::MaxPool2dOptions maxpool_options(layer_info.maxpool_params.kernel_size);
-                maxpool_options.stride(layer_info.maxpool_params.stride);
+                torch::nn::MaxPool2dOptions maxpool_options(layer_info.pool_params.kernel_size);
+                maxpool_options.stride(layer_info.pool_params.stride);
     
-                if (layer_info.maxpool_params.padding == "same") {
+                if (layer_info.pool_params.padding == "same") {
                     // TODO SAME PADDING DOES NOT WORK IN LIBTORCH
                     std::cout << "NOT IMPLEMENTED YET" << std::endl;
                 } else {
-                    int64_t numeric_padding = std::stoi(layer_info.maxpool_params.padding);
+                    int64_t numeric_padding = std::stoi(layer_info.pool_params.padding);
                     maxpool_options.padding(numeric_padding);
                 }
 
                 layers->push_back(torch::nn::MaxPool2d(maxpool_options));
             } else if (layer_info.type == "batchnorm2d") {
                 layers->push_back(torch::nn::BatchNorm2d(layer_info.batchnorm_params.num_features[0]));
+            } else if (layer_info.type == "dropout") {
+                layers->push_back(torch::nn::Dropout(torch::nn::DropoutOptions(layer_info.dropout_params.probability).inplace(layer_info.dropout_params.inplace)));
+            } else if (layer_info.type == "averagepool2d") {
+                torch::nn::AvgPool2dOptions averagepool_options(layer_info.pool_params.kernel_size);
+                averagepool_options.stride(layer_info.pool_params.stride);
+    
+                if (layer_info.pool_params.padding == "same") {
+                    // TODO SAME PADDING DOES NOT WORK IN LIBTORCH
+                    std::cout << "NOT IMPLEMENTED YET" << std::endl;
+                } else {
+                    int64_t numeric_padding = std::stoi(layer_info.pool_params.padding);
+                    averagepool_options.padding(numeric_padding);
+                }
+
+                layers->push_back(torch::nn::AvgPool2d(averagepool_options));
             }
 
             if (layer_info.activation_function == "relu") {

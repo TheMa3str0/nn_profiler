@@ -59,7 +59,7 @@ std::vector<NetworkLayer>& ConfigParser::getNetworkLayers() {
             }
             layer_info.conv_params = convolution_parameters; 
         } else if (layer_info.type == "maxpool2d") {
-            MaxpoolParams maxpool_parameters;
+            PoolParams maxpool_parameters;
             maxpool_parameters.kernel_size = layer["maxpool_params"]["kernel_size"].get<std::vector<int64_t>>();
             maxpool_parameters.stride = layer["maxpool_params"]["stride"].get<std::vector<int64_t>>();
             if (layer["maxpool_params"]["padding"].is_number()) {
@@ -67,7 +67,7 @@ std::vector<NetworkLayer>& ConfigParser::getNetworkLayers() {
             } else {
                 maxpool_parameters.padding = layer["maxpool_params"]["padding"].get<std::string>();
             }
-            layer_info.maxpool_params = maxpool_parameters;
+            layer_info.pool_params = maxpool_parameters;
         } else if (layer_info.type == "batchnorm2d") {
             BatchnormParams batchnorm_parameters;
             batchnorm_parameters.num_features = layer["batchnorm_params"]["num_features"].get<std::vector<int64_t>>();
@@ -77,6 +77,16 @@ std::vector<NetworkLayer>& ConfigParser::getNetworkLayers() {
             dropout_parameters.probability = layer["dropout_params"]["p"];
             dropout_parameters.inplace = layer["dropout_params"]["inplace"];
             layer_info.dropout_params = dropout_parameters;
+        } else if (layer_info.type == "averagepool2d") {
+            PoolParams averagepool_parameters;
+            averagepool_parameters.kernel_size = layer["averagepool_params"]["kernel_size"].get<std::vector<int64_t>>();
+            averagepool_parameters.stride = layer["averagepool_params"]["stride"].get<std::vector<int64_t>>();
+            if (layer["averagepool_params"]["padding"].is_number()) {
+                averagepool_parameters.padding = std::to_string(layer["averagepool_params"]["padding"].get<int64_t>());
+            } else {
+                averagepool_parameters.padding = layer["averagepool_params"]["padding"].get<std::string>();
+            }
+            layer_info.pool_params = averagepool_parameters;
         }
         
         network_layers_.push_back(layer_info);
