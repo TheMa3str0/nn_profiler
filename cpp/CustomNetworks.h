@@ -93,6 +93,8 @@ struct CustomNetworkImpl : torch::nn::Module {
                 layers->push_back(torch::nn::ReLU());
             } else if (layer_info.activation_function == "softmax") {
                 layers->push_back(torch::nn::Softmax(1));
+            } else if (layer_info.activation_function == "tanh") {
+                layers->push_back(torch::nn::Tanh());
             }
         }
     }

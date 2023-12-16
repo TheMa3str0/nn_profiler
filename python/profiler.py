@@ -15,13 +15,16 @@ def read_config_file(config_file_path):
 #TODO add choice between custom and well-known nets
 config_data = read_config_file('../network_config.json')
 
-if config_data['network']['use_onnx']:
+""" if config_data['network']['use_onnx']:
     onnx_file_path = config_data['network']['onnx_file_path']
     #network = torch.onnx.load_model(onnx_file_path) #TODO
     network = constructor.build_custom_net(config_data['network']['layers'])
 else:
     network = constructor.build_custom_net(config_data['network']['layers'])
-    constructor.print_network_architecture(network)
+    constructor.print_network_architecture(network) """
+    
+network = constructor.build_custom_net(config_data['network']['layers'])
+constructor.print_network_architecture(network)
     
 device = config_data['network']['device']
 

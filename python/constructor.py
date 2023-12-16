@@ -55,6 +55,8 @@ def build_custom_net(layers):
                     self.layers.append(nn.ReLU())
                 elif activation == 'softmax':
                     self.layers.append(nn.Softmax(dim=1))
+                elif activation == 'tanh':
+                    self.layers.append(nn.Tanh())
 
         def forward(self, x):
             for layer in self.layers:
