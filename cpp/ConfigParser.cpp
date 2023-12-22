@@ -87,6 +87,12 @@ std::vector<NetworkLayer>& ConfigParser::getNetworkLayers() {
                 averagepool_parameters.padding = layer["averagepool_params"]["padding"].get<std::string>();
             }
             layer_info.pool_params = averagepool_parameters;
+        } else if (layer_info.type == "residual_block") {
+            ResidualParams residual_parameters;
+            residual_parameters.in_channels = layer["residual_params"]["in_channels"];
+            residual_parameters.out_channels = layer["residual_params"]["out_channels"];
+            residual_parameters.stride = layer["residual_params"]["stride"];
+            layer_info.residual_params = residual_parameters;
         }
         
         network_layers_.push_back(layer_info);

@@ -10,7 +10,7 @@
 using json = nlohmann::json;
 
 int main() {
-    ConfigParser configParser("../../network_config.json");
+    ConfigParser configParser("../../configs/resnet34_config.json");
     if (!configParser.parseConfig()) {
         return -1;
     }

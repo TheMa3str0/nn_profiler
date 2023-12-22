@@ -89,6 +89,20 @@ def validate_dropout_params(dropout_params):
         
     return [error for error in errors if error is not None]
 
+def validate_residual_params(residual_params):
+    errors = []
+    
+    if not isinstance(residual_params['in_channels'], int) or residual_params['in_channels'] < 0:
+        errors.append("'in_channels' must be a positive number.")
+        
+    if not isinstance(residual_params['out_channels'], int) or residual_params['out_channels'] < 0:
+        errors.append("'out_channels' must be a positive number.")
+        
+    if not isinstance(residual_params['stride'], int) or residual_params['stride'] < 0:
+        errors.append("'stride' must be a positive number.")
+        
+    return [error for error in errors if error is not None]
+
 def check_network_config(network_config):
     errors = []
 
@@ -139,7 +153,7 @@ def check_layers_config(layers):
     errors = []
 
     for layer in layers:
-        valid_layer_types = ['conv2d', 'dense', 'maxpool2d', 'flatten', 'batchnorm2d', 'averagepool2d', 'dropout']
+        valid_layer_types = ['conv2d', 'dense', 'maxpool2d', 'flatten', 'batchnorm2d', 'averagepool2d', 'dropout', 'residual_block']
         errors.append(validate_field(layer, 'type', str, valid_values=valid_layer_types, required=True))
         
         valid_activation_functions = ['relu', 'softmax']
@@ -191,6 +205,13 @@ def check_layers_config(layers):
                 errors.extend(averagepool_params_errors)
             else:
                 errors.append("Missing 'averagepool_params' in a 'averagepool2d' layer.")
+                
+        if layer['type'] == 'residual_block':
+            if 'residual_params' in layer:
+                residual_params_errors = validate_residual_params(layer['residual_params'])
+                errors.extend(residual_params_errors)
+            else:
+                errors.append("Missing 'residual_params' in a 'residual_block'.")
 
         # Add more checks for specific keys in different types of layers
 
